@@ -65,7 +65,7 @@ def add_variants(bed_entries,vcf,args,ltrdict):
     
 #currently we have on-the-fly batch generation from hdf5 & bed files. 
 def data_generator(data_path,args):
-    if data_path.endswith('.hdf5'):
+    if data_path.endswith('.hdf5') or data_path.endswith('.h5'):
         return data_generator_hdf5(data_path,args)
     elif (data_path.endswith('.bed') or data_path.endswith('.bed.gz')):
         return data_generator_bed(data_path,args) 
