@@ -64,9 +64,9 @@ def add_variants(bed_entries,vcf,args,ltrdict):
 
     
 #currently we have on-the-fly batch generation from hdf5 & bed files. 
-def data_generator(data_path,args):
+def data_generator(data_path,in_label,out_label,args):
     if data_path.endswith('.hdf5') or data_path.endswith('.h5'):
-        return data_generator_hdf5(data_path,args)
+        return data_generator_hdf5(data_path,in_label,out_label,args)
     elif (data_path.endswith('.bed') or data_path.endswith('.bed.gz')):
         return data_generator_bed(data_path,args) 
     else:
@@ -139,7 +139,7 @@ def data_generator_bed(bed_source,args):
             else:
                 yield tuple([x_batch,y_batch])
             
-def data_generator_hdf5(data_path,args):
+def data_generator_hdf5(data_path,in_label,out_label,args):
     hdf5_source=h5py.File(data_path,'r')
     num_generated=0
     total_entries=hdf5_source['X']['default_input_mode_name'].shape[0]
@@ -149,8 +149,8 @@ def data_generator_hdf5(data_path,args):
         if(num_generated >=total_entries):
             start_index=0
         end_index=start_index+batch_size 
-        x_batch=hdf5_source['X']['default_input_mode_name'][start_index:end_index]
-        y_batch=hdf5_source['Y']['default_output_mode_name'][start_index:end_index]
+        x_batch=hdf5_source[in_label]['default_input_mode_name'][start_index:end_index]
+        y_batch=hdf5_source[out_label]['default_output_mode_name'][start_index:end_index]
         num_generated+=batch_size 
         start_index=end_index
         yield tuple([x_batch,y_batch])

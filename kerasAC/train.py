@@ -9,7 +9,7 @@ from kerasAC.create_generators import *
 def parse_args():
     parser=argparse.ArgumentParser()
     parser.add_argument("--train_path")
-    parser.add_argument("--valid_path")
+    parser.add_argument("--valid_path",default="not_provided")
     parser.add_argument("--model_output_file")
     parser.add_argument("--batch_size",type=int,default=1000)
     parser.add_argument("--init_weights",default=None)
@@ -90,17 +90,27 @@ def main():
         print("got weights!")
     try:
         if (args.architecture_from_file!=None):
+            print('trying to get architecture from kerasAC.architectures.' + args.architecture_spec)
             architecture_module=imp.load_source('',args.architecture_from_file)
         else:
+            print('trying to get architecture from kerasAC.architectures.' + args.architecture_spec)
             architecture_module=importlib.import_module('kerasAC.architectures.'+args.architecture_spec)
+            print('got architecture from architecture_spec')
     except:
-        print("could not import requested architecture, is it installed in kerasAC/kerasAC/architectures? Is the file with the requested architecture specified correctly?")
+            architecture_module=importlib.import_module('kerasAC.architectures.'+args.architecture_spec)
+            print("could not import requested architecture, is it installed in kerasAC/kerasAC/architectures? Is the file with the requested architecture specified correctly?")
     model=architecture_module.getModelGivenModelOptionsAndWeightInits(w0,w1,args.init_weights,args.from_checkpoint_weights,args.from_checkpoint_arch,args.num_tasks,args.seed)
     print("compiled the model!")
-    train_generator=data_generator(args.train_path,args)
-    print("generated training data generator!") 
-    valid_generator=data_generator(args.valid_path,args)
-    print("generated validation data generator!") 
+    if(args.valid_path == "not_provided"):
+        train_generator=data_generator(args.train_path,'train_in','train_out',args)
+        print("generated training data generator!") 
+        valid_generator=data_generator(args.train_path,'valid_in','valid_out',args)
+        print("generated validation data generator!") 
+    else:
+        train_generator=data_generator(args.train_path,'X','Y',args)
+        print("generated training data generator!") 
+        valid_generator=data_generator(args.valid_path,'X','Y',args)
+        print("generated validation data generator!") 
     fit_and_evaluate(model,train_generator,
                      valid_generator,args) 
 
