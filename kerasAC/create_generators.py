@@ -2,7 +2,8 @@ import numpy as np
 import pysam
 import pandas as pd
 import pdb
-import tabix 
+import tabix
+import h5py 
 
 def revcomp(seq):
     seq=seq[::-1].upper()
@@ -142,15 +143,17 @@ def data_generator_bed(bed_source,args):
 def data_generator_hdf5(data_path,in_label,out_label,args):
     hdf5_source=h5py.File(data_path,'r')
     num_generated=0
-    total_entries=hdf5_source['X']['default_input_mode_name'].shape[0]
+    total_entries=hdf5_source[in_label].shape[0]
     start_index=0
     batch_size=args.batch_size 
     while True:
         if(num_generated >=total_entries):
             start_index=0
         end_index=start_index+batch_size 
-        x_batch=hdf5_source[in_label]['default_input_mode_name'][start_index:end_index]
-        y_batch=hdf5_source[out_label]['default_output_mode_name'][start_index:end_index]
+        x_batch=hdf5_source[in_label][start_index:end_index]
+        y_batch=hdf5_source[out_label][start_index:end_index]
         num_generated+=batch_size 
         start_index=end_index
+        print(x_batch.shape)
+        x_batch=np.transpose(x_batch,(0,2,3,1))
         yield tuple([x_batch,y_batch])

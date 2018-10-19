@@ -1,7 +1,7 @@
 # example 0
-CUDA_VISIBLE_DEVICES=4 kerasAC_train \
+CUDA_VISIBLE_DEVICES=0 kerasAC_train \
  --train_path /lfs/local/0/mccreery/repos/baf_ml/baf/baf_data/all_t1_data_concat_small.h5 \
- --architecture_spec basset_architecture_original
+ --architecture_spec basset_architecture_single_task --model_output_file test.csv --batch_size 1000
 #example 1 
 #CUDA_VISIBLE_DEVICES=7 kerasAC_train --train_path /srv/scratch/annashch/deeplearning/form_inputs/gecco_inputs_v2/experiments_easy_set/tasks_for_difficult_tfs/multi_task.train.bed \
 #		    --valid_path /srv/scratch/annashch/deeplearning/form_inputs/gecco_inputs_v2/experiments_easy_set/tasks_for_difficult_tfs/multi_task.validate.bed \

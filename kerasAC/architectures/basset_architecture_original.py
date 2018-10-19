@@ -8,7 +8,7 @@ def getModelGivenModelOptionsAndWeightInits(w0,w1,init_weights,seed):
     from keras.layers.core import Dropout, Reshape, Dense, Activation, Flatten
     from keras.layers.convolutional import Conv2D, MaxPooling2D
     from keras.optimizers import Adadelta, SGD, RMSprop;
-    from keras.losses import *;
+    #from keras.losses import *;
     from keras.constraints import maxnorm;
     from keras.layers.normalization import BatchNormalization
     from keras.regularizers import l1, l2    
